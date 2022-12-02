@@ -15,13 +15,36 @@ class Room():
             return True
         return False
 
+    def check_playlist_for_customer_fav(self, customer_object):
+        for song in self.songs_list:
+            if song  == customer_object.favourite_song:
+                print(customer_object.cheer())
+                return True
+        return False
+
+    def customer_can_afford(self, customer_object):
+        if customer_object.money >= self.price:
+            return True
+        return False
+    
+    def charge_customer(self, customer_object):
+        customer_object.money -= self.price
+
+    def test_guest_can_check_in(self, customer_object):
+        if not self.check_room_has_space():
+            print("This room is full!")
+            return False
+        elif not self.customer_can_afford(customer_object):
+            print("Customer can't afford to get in!")
+            return False
+        return True
+
     def check_in_guest(self, customer_object):
-        #add test to check if there is space in the room
-        if self.check_room_has_space():
+        if self.test_guest_can_check_in(customer_object):
             customer_object.checked_in = True
             self.guests_list.append(customer_object)
-        else: 
-            print("This room is full!")
+            self.charge_customer(customer_object)
+            self.check_playlist_for_customer_fav(customer_object)
     
     def check_out_guest(self, customer_object):
         customer_object.checked_in = False
